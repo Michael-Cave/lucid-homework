@@ -71,11 +71,14 @@ def filter_logs_by_date(file_path, start_date_str, stop_date_str=None):
         in_date_range = False
         for line in file:
             try:
-                log_date_str = line.split("|")[0]
+                log_date_str = line.split("|")[0].strip()
                 if log_date_within_range(log_date_str, start_date, stop_date):
                     in_date_range = True
+                else:
+                    in_date_range = False
             except ValueError:
-                pass
+                if not in_date_range:
+                    continue
             if in_date_range:
                 target_file.write(line)
     
