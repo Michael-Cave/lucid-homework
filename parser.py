@@ -69,11 +69,14 @@ def filter_logs_by_date(file_path, start_date_str, stop_date_str=None):
 
     with open(file_path, 'r') as file, open(target_file_path, 'w') as target_file:
         in_date_range = False
+        reached_target_date = False
+
         for line in file:
             try:
                 log_date_str = line.split("|")[0].strip()
                 if log_date_within_range(log_date_str, start_date, stop_date):
                     in_date_range = True
+                    reached_target_date = True
                 else:
                     in_date_range = False
             except ValueError:
@@ -81,6 +84,9 @@ def filter_logs_by_date(file_path, start_date_str, stop_date_str=None):
                     continue
             if in_date_range:
                 target_file.write(line)
+
+            if not in_date_range and reached_target_date:
+                break
     
     return target_file_path
 
@@ -89,8 +95,21 @@ def search_filtered_log(target_file_path, search_term):
 
     prev_lines = deque(maxlen=6)
 
+    post_match_counter = 0
+
     with open(target_file_path, 'r') as file:
         for line in file:
+
+            # Checks if a match has been made in the past five lines and prints the next line for context
+            # Also check for the search term and resets the counter if found
+            if post_match_counter > 0:
+                print(line, end=' ')
+                if search_term in line:
+                    post_match_counter = 5
+                else:
+                    post_match_counter -= 1
+                continue
+
             prev_lines.append(line)
             
             # Prints the previous five lines and current line for context
@@ -98,18 +117,7 @@ def search_filtered_log(target_file_path, search_term):
                 for pline in list(prev_lines)[:-1]:
                     print(pline, end=' ')
                 print(line, end=' ')
-            
-            # Grabs and prints the next five lines for context
-            try:
-                for _ in range(5):
-                    print(next(file), end=' ')
-            except StopIteration:
-                break  # End of file reached
-
-            # Clears the deque to reduce spam in the event of close hits
-            prev_lines.clear()
-
-
+                post_match_counter = 5
 
 
 
