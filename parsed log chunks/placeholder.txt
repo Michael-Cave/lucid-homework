@@ -1,0 +1,1 @@
+A placeholder file to ensure that git actually commits the "parsed log chunks" directory.

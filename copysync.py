@@ -38,7 +38,7 @@ def copy_file_to_destination(source, destination):
 
 # Monitors "dirtyBytes" to see when the upload is complete
 def check_dirty_bytes():
-    url = "http://localhost:8280/cache/info"
+    url = "http://DESKTOP-QL087CJ.local:8280/cache/info"
     counter = 0
 
     while True:
