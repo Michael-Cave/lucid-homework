@@ -28,14 +28,6 @@ def parse_arguments(args):
         return file_path, start_date, stop_date, search_term
     
 
-# Converts the windows filepath into a filepath readable by WSL
-def convert_windows_path_to_wsl(windows_path):
-    replace_backslash = windows_path.replace('\\', '/')
-    replace_colon = replace_backslash.replace(':', '')
-
-    linux_path = f"/mnt/{replace_colon}".lower()
-    return linux_path
-
 
 # Converts date strings to valid datetime objects
 def parse_date_from_string(date_string):
@@ -143,9 +135,8 @@ def main():
     elif len(args) == 4:
         file_path, start_date, stop_date, search_term = args
 
-    linux_path = convert_windows_path_to_wsl(file_path)
 
-    target_file = filter_logs_by_date(linux_path, start_date, stop_date)
+    target_file = filter_logs_by_date(file_path, start_date, stop_date)
     search_filtered_log(target_file, search_term)
 
 

@@ -14,13 +14,6 @@ def parse_arguments(args):
     destination_path = args[2]
     return source_path, destination_path
 
-# Converts Windows paths to Windows Subsystem for Linux paths
-def convert_windows_path_to_wsl(windows_path):
-    replace_backslash = windows_path.replace('\\', '/')
-    replace_colon = replace_backslash.replace(':', '')
-
-    linux_path = f"/mnt/{replace_colon}".lower()
-    return linux_path
 
 # Uses rsync to copy the source file to the target location
 def copy_file_to_destination(source, destination):
@@ -38,7 +31,7 @@ def copy_file_to_destination(source, destination):
 
 # Monitors "dirtyBytes" to see when the upload is complete
 def check_dirty_bytes():
-    url = "http://$(hostname).local:8280/cache/info"
+    url = "http://localhost:8280/cache/info"
     counter = 0
 
     while True:
@@ -67,7 +60,7 @@ def check_dirty_bytes():
 
 # Sends empty PUT request to synch changes
 def send_put_request():
-    url = "http://$(hostname):8280/app/sync"
+    url = "http://localhost:8280/app/sync"
     
     try:
         response = requests.put(url)
@@ -84,10 +77,8 @@ def send_put_request():
 
 def main():
     source, desintation = parse_arguments(sys.argv)
-    source_path = convert_windows_path_to_wsl(source)
-    destination_path = convert_windows_path_to_wsl(desintation)
 
-    copy_file_to_destination(source_path, destination_path)
+    copy_file_to_destination(source, desintation)
     check_dirty_bytes()
     send_put_request()
 

@@ -16,7 +16,7 @@ It accepts the arguments of: <target_file_path> <start_date> <end_date> <search_
 
 It is highly advised to encapsulate all arguments in quotations.
 
-<target_file_path> will automatically convert a Windows filepath to a WSL mounted filepath, and converts it all to lowercase.  It should work just fine, but be aware that it might act up if there are multiple directories in the filepath whose only difference is captialization.
+<target_file_path> takes the absolute windows filepath.  It's a simple matter of copying the filepath form
 
 <start_date> only accepts a date format of "yyyy-mm-dd".  This is because that's how the logs format their datetime stamps and it's the backbone of how the program pares down the search area
 
@@ -30,15 +30,8 @@ A little program that <*should*> copy a file to a LucidLink filespace with rsync
 
 Accpets the arguments of: <source_file_path> <destination_directory_path>
 
-Automatically converts all Windows filepaths to WSL mounted filepaths so long as the LucidLink filespace is set up like a drive.
-
 Firstly, it copies the <source_file> to the <destination_directory> via rsync. When that completes, it moves to the next step.
 
 Second, it makes an HTTP GET request and watches the <dirtyBytes> field of the returned JSON with a retry interval of 1s.  When that resolves as "0" it moves on to the final step.
 
 Finally, it sends an empty HTTP PUT request.
-
-# Known Issues:
-I, personally, can't get WSL to communicate with the target HTTP server on Windows <http://localhost:8280/cache/info>.  The port will change depending on which LucidLink filespace you're accessing, check which port your target filespace is listening on with "Lucid list" in powershell or commandprompt first and adjust the ```url``` value in the functions ```check_dirty_bytes``` and ```send_put_request```.
-
-You'll also need to change the domain name in the HTTP requests to whatever you can get to successfully communicate from WSL to Windows.
