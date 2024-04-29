@@ -38,7 +38,7 @@ def copy_file_to_destination(source, destination):
 
 # Monitors "dirtyBytes" to see when the upload is complete
 def check_dirty_bytes():
-    url = "http://DESKTOP-QL087CJ.local:8280/cache/info"
+    url = "http://$(hostname).local:8280/cache/info"
     counter = 0
 
     while True:
@@ -67,7 +67,7 @@ def check_dirty_bytes():
 
 # Sends empty PUT request to synch changes
 def send_put_request():
-    url = "http://localhost:8280/app/sync"
+    url = "http://$(hostname):8280/app/sync"
     
     try:
         response = requests.put(url)
