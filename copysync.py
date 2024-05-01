@@ -17,20 +17,25 @@ def parse_arguments(args):
 
 # Uses rsync to copy the source file to the target location
 def copy_file_to_destination(source, destination):
-    command = ["rsync", "-vz", source, destination]
+
+    ps_command = f'Copy-Item -Path "{source}" -Destination "{destination}"'
+    command = ["powershell", "-Command", ps_command]
 
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     if result.returncode == 0:
-        print("rsync completed successfully.")
+        print("Copy-Item completed successfully.")
         print(result.stdout)
     else:
-        print("rsync failed.")
+        print("Copy-Item failed.")
+        print(f"{result.returncode}")
         print(result.stderr)
 
 
 # Monitors "dirtyBytes" to see when the upload is complete
 def check_dirty_bytes():
+    print("Starting sync,")
+
     url = "http://localhost:8280/cache/info"
     counter = 0
 
@@ -76,9 +81,9 @@ def send_put_request():
 
 
 def main():
-    source, desintation = parse_arguments(sys.argv)
+    source, destination = parse_arguments(sys.argv)
 
-    copy_file_to_destination(source, desintation)
+    copy_file_to_destination(source, destination)
     check_dirty_bytes()
     send_put_request()
 
