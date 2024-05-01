@@ -65,7 +65,7 @@ def filter_logs_by_date(file_path, start_date_str, stop_date_str=None):
 
     # Checks if the target file already exists
     if os.path.exists(target_file_path):
-        print(f'File {target_file_path} already exists. No need to filter again.')
+        print(f'File {target_file_path} already exists, proceeding to search.')
         return target_file_path
 
     with open(file_path, 'r') as file, open(target_file_path, 'w') as target_file:
