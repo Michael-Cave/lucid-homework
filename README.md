@@ -28,7 +28,9 @@ It is highly advised to encapsulate all arguments in quotations.
 # Copysync.py
 A little program that <*should*> copy a file to a LucidLink filespace with rsync, keep track of if the background uploads are finished, and then send an empty HTTP PUT request.
 
-Accpets the arguments of: <source_file_path> <destination_directory_path>
+Accpets the arguments of: <source_file_path> <destination_directory_path> <port>
+
+If a port number isn't given, the program defaults to port 8279.
 
 Firstly, it copies the <source_file> to the <destination_directory> via rsync. When that completes, it moves to the next step.
 
