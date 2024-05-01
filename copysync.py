@@ -5,13 +5,17 @@ import sys
 
 # Parses arguments into usable formats
 def parse_arguments(args):
-    if len(args) != 3:
-        print("Usage: python copysync.py '<source_windows_path>' '<destination_windows_path>'")
+    if len(args) < 3 or len(args) > 4:
+        print("Usage: python copysync.py '<source_windows_path>' '<destination_windows_path>' '<optional port number>'")
         sys.exit(1)
 
     source_path = args[1]
     destination_path = args[2]
-    return source_path, destination_path
+    port = None
+    if len(args) == 4:
+        port = args[3]
+    
+    return source_path, destination_path, port
 
 
 # Uses rsync to copy the source file to the target location
@@ -32,10 +36,13 @@ def copy_file_to_destination(source, destination):
 
 
 # Monitors "dirtyBytes" to see when the upload is complete
-def check_dirty_bytes():
+def check_dirty_bytes(port=None):
     print("Starting sync,")
 
-    url = "http://localhost:8280/cache/info"
+    if not port:
+        url = "http://localhost:8279/cache/info"
+    else:
+        url = f'http://localhost:{port}/cache/info'
     counter = 0
 
     while True:
@@ -63,8 +70,11 @@ def check_dirty_bytes():
 
 
 # Sends empty PUT request to synch changes
-def send_put_request():
-    url = "http://localhost:8280/app/sync"
+def send_put_request(port=None):
+    if not port:
+        url = "http://localhost:8279/app/sync"
+    else:
+        url = f'http://localhost:{port}/app/sync'
     
     try:
         response = requests.put(url)
@@ -80,11 +90,11 @@ def send_put_request():
 
 
 def main():
-    source, destination = parse_arguments(sys.argv)
+    source, destination, port = parse_arguments(sys.argv)
 
     copy_file_to_destination(source, destination)
-    check_dirty_bytes()
-    send_put_request()
+    check_dirty_bytes(port)
+    send_put_request(port)
 
 
 
